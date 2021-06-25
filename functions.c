@@ -14,6 +14,16 @@ typedef struct {
     Elemento** oculto;
 }Tablero;
 
+void menu(){
+    printf("\n\n- Menu -\n");
+    printf("1.- Jugar!\n");
+    printf("2.- Instrucciones.\n");
+    printf("3.- Cargar partida\n");
+    printf("4.- Mostrar mejores puntajes\n");
+    printf("5.- Salir\n\n");
+    printf("Ingrese opcion: ");
+}
+
 Elemento** crearTablero(char* valor, int columnas, int fila){
     int i,j;
     fila += 4;

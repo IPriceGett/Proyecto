@@ -9,4 +9,6 @@ Elemento** crearTablero(char* valor, int columnas, int fila);
 
 void muestraTablero(Elemento** tablero,int fila, int columna);
 
+void menu();
+
 #endif /* FUNCTIONS_H */
