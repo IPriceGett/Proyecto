@@ -1,8 +1,12 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-List* crearTablero(char* valor, int columnas, int fila);
+typedef struct Elemento Elemento;
 
-void muestraTablero(List* tablero);
+typedef struct Tablero Tablero;
+
+Elemento** crearTablero(char* valor, int columnas, int fila);
+
+void muestraTablero(Elemento** tablero,int fila, int columna);
 
 #endif /* FUNCTIONS_H */

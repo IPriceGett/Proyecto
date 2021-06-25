@@ -4,150 +4,148 @@
 #include "list.h"
 
 typedef struct {
-    char valor;
+    char* valor;
     int coordenadas[2];
+    int seleccionado;
 }Elemento;
 
-List* crearTablero(char* valor, int columnas, int fila){
+typedef struct {
+    Elemento** visible;
+    Elemento** oculto;
+}Tablero;
+
+Elemento** crearTablero(char* valor, int columnas, int fila){
     int i,j;
     fila += 4;
     columnas+=11;
-    List* tablero = createList(); 
+    Elemento** tablero = (Elemento**)calloc(fila,fila*sizeof(Elemento*)); 
     for( i=0;i<fila;i++){
-        List* filas = createList();
+        tablero[i] = (Elemento*)calloc(columnas,columnas*sizeof(Elemento));
         for( j=0;j<columnas;j++){
-            Elemento* elemento = (Elemento*)calloc(1,sizeof(Elemento));
             if (i == 0 && j == 0)
-                pushBack(filas," ");
+                tablero[i][j].valor=" ";
             else if (i == 0 && j == 3)
-                pushBack(filas,"1");
+                tablero[i][j].valor="1";
             else if (i == 0 && j == 6)
-                pushBack(filas,"2");
+                tablero[i][j].valor="2";
             else if (i == 0 && j == 9)
-                pushBack(filas,"3");
+                tablero[i][j].valor="3";
             else if (i == 0 && j == 12)
-                pushBack(filas,"4");
+                tablero[i][j].valor="4";
             else if (i == 0 && j == 15)
-                pushBack(filas,"5");
+                tablero[i][j].valor="5";
             else if (i == 0 && j == 18)
-                pushBack(filas,"6");
+                tablero[i][j].valor="6";
             else if (i == 0 && j == 21)
-                pushBack(filas,"7");
+                tablero[i][j].valor="7";
             else if (i == 0&& j == 24)
-                pushBack(filas,"8");
+                tablero[i][j].valor="8";
             else if (i == 0&& j == 27)
-                pushBack(filas,"9");
+                tablero[i][j].valor="9";
             else if (i == 0&& j == 30)
-                pushBack(filas,"10");
+                tablero[i][j].valor="10";
             else if (i == 0 &&j == 32)
-                pushBack(filas,"11");
+                tablero[i][j].valor="11";
             else if (i == 0 &&j == 36)
-                pushBack(filas,"12");
+                tablero[i][j].valor="12";
             else if (i == 0 && j == 38)
-                pushBack(filas,"13");
+                tablero[i][j].valor="13";
             else if (i == 0 && j == 42)
-                pushBack(filas,"14");
+                tablero[i][j].valor="14";
             else if (i == 0 && j == 44)
-                pushBack(filas,"15");
+                tablero[i][j].valor="15";
             else if (i == 0 && j == 48)
-                pushBack(filas,"16");
+                tablero[i][j].valor="16";
             else if (i == 0 && j == 50)
-                pushBack(filas,"17");
+                tablero[i][j].valor="17";
             else if (i == 0 && j == 54)
-                pushBack(filas,"18");
+                tablero[i][j].valor="18";
             else if (i == 0 && j == 56)
-                pushBack(filas,"19");
+                tablero[i][j].valor="19";
             else if (i == 0 && j == 60)
-                pushBack(filas,"20");
+                tablero[i][j].valor="20";
             else if (i == 0 && j == 62)
-                pushBack(filas,"21");
+                tablero[i][j].valor="21";
             else if (i == 0 && j == 66)
-                pushBack(filas,"22");
+                tablero[i][j].valor="22";
             else if (i == 0 && j == 68)
-                pushBack(filas,"23");
+                tablero[i][j].valor="23";
             else if (i == 0 && j == 72)
-                pushBack(filas,"24");
+                tablero[i][j].valor="24";
             else if (i == 0 && j == 74)
-                pushBack(filas,"25");
+                tablero[i][j].valor="25";
             else if (i == 0 && j == 78)
-                pushBack(filas,"26");
+                tablero[i][j].valor="26";
             else if (i == 1 && j == 0)
-                pushBack(filas,"A");
+                tablero[i][j].valor="A";
             else if (i == 2 && j == 0)
-                pushBack(filas,"B");
+                tablero[i][j].valor="B";
             else if (i == 3 && j == 0)
-                pushBack(filas,"C");
+                tablero[i][j].valor="C";
             else if (i == 4 && j == 0)
-                pushBack(filas,"D");
+                tablero[i][j].valor="D";
             else if (i == 5 && j == 0)
-                pushBack(filas,"E");
+                tablero[i][j].valor="E";
             else if (i == 6 && j == 0)
-                pushBack(filas,"F");
+                tablero[i][j].valor="F";
             else if (i == 7 && j == 0)
-                pushBack(filas,"G");
+                tablero[i][j].valor="G";
             else if (i == 8 && j == 0)
-                pushBack(filas,"H");
+                tablero[i][j].valor="H";
             else if (i == 9 && j == 0)
-                pushBack(filas,"I");
+                tablero[i][j].valor="I";
             else if (i == 10&&  j == 0)
-                pushBack(filas,"J");
+                tablero[i][j].valor="J";
             else if (i == 11&&  j == 0)
-                pushBack(filas,"K");
+                tablero[i][j].valor="K";
             else if (i == 12&&  j == 0)
-                pushBack(filas,"L");
+                tablero[i][j].valor="L";
             else if (i == 13&&  j == 0)
-                pushBack(filas,"M");
+                tablero[i][j].valor="M";
             else if (i == 14&&  j == 0)
-                pushBack(filas,"N");
+                tablero[i][j].valor="N";
             else if (i == 15&&  j == 0)
-                pushBack(filas,"O");
+                tablero[i][j].valor="O";
             else if (i == 16&&  j == 0)
-                pushBack(filas,"P");
+                tablero[i][j].valor="P";
             else if (i == 17 && j == 0)
-                pushBack(filas,"Q");
+                tablero[i][j].valor="Q";
             else if (i == 18 && j == 0)
-                pushBack(filas,"R");
+                tablero[i][j].valor="R";
             else if (i == 19 && j == 0)
-                pushBack(filas,"S");
+                tablero[i][j].valor="S";
             else if (i == 20 && j == 0)
-                pushBack(filas,"T");
+                tablero[i][j].valor="T";
             else if (i == 21 && j == 0)
-                pushBack(filas,"U");
+                tablero[i][j].valor="U";
             else if (i == 22 && j == 0)
-                pushBack(filas,"V");
+                tablero[i][j].valor="V";
             else if (i == 23 && j == 0)
-                pushBack(filas,"W");
+                tablero[i][j].valor="W";
             else if (i == 24 && j == 0)
-                pushBack(filas,"X");
+                tablero[i][j].valor="X";
             else if (i == 25 && j == 0)
-                pushBack(filas,"Y");
+                tablero[i][j].valor="Y";
             else if (i == 26 && j == 0)
-                pushBack(filas,"Z");
+                tablero[i][j].valor="Z";
             else{
                 if ((j%3)!=0 || j>79)
-                    pushBack(filas," ");
+                    tablero[i][j].valor=" ";
                 else if (i>0)
-                    pushBack(filas,valor);
+                    tablero[i][j].valor=valor;
             }
         }
-        pushBack(tablero,filas);
     }
         
             
     return tablero;
 }
 
-void muestraTablero(List* tablero){
-    List* fila;
-    fila = firstList(tablero);
-    while(fila){
-        char* elem;
-        elem = firstList(fila);
-        while(elem){
-            printf("%s ",elem);
-            elem = nextList(fila);
+void muestraTablero(Elemento** tablero,int columna, int fila){
+    for(int i = 0; i<fila;i++){
+        for(int j =0;j<columna;j++){
+            printf("%s ",tablero[i][j].valor);
         }
-        fila = nextList(tablero);
         printf("\n");
     }
 }
