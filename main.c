@@ -1,11 +1,28 @@
 #include <stdio.h>
 #include "list.h"
 #include "functions.h"
+#include "treemap.h"
+#include "Map.h"
+
+int lower_than_int(void* key1, void* key2){
+    int k1 = *((int*) (key1));
+    int k2 = *((int*) (key2));
+    return k1<k2;
+}
 
 int main(){
 
+    /* Tablero que contiene las casillas marcadas por el usuario */
     Elemento** tableroVisible = crearTablero(".",30,10);
+    /* Tablero que econtiene las bombas y no es mostrado al usuario */
     Elemento** tableroOculto = crearTablero("*",30,10);
+    /* Mapa ordenado que almacena los mejores puntajes */
+    TreeMap *puntajes = createTreeMap(lower_than_int);
+    /* Almacena las partidas guardadas */
+    HashMap *partidas = createMap(50);
+    /* Almacena el mapa de partidas guardadas por nombre de usuario */
+    HashMap *usuarios = createMap(50);
+
 
     int opcion;
     do{

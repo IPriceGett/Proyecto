@@ -36,7 +36,7 @@ long hash( char * key, long capacity) {
     return hash%capacity;
 }
 
-int is_equal(void * key1, void * key2){
+int is_equal_uno(void * key1, void * key2){
     if(key1 == NULL || key2 == NULL) return 0;
     if(strcmp((char*)key1,(char*)key2) == 0) return 1;
     return 0;
@@ -89,7 +89,7 @@ HashMap * createMap(long capacity) {
 
 void eraseMap(HashMap * map,  char * key) {    
   long posicion = hash(key, map->capacity);
-  while((is_equal(key, map->buckets[posicion]->key) == 0)){
+  while((is_equal_uno(key, map->buckets[posicion]->key) == 0)){
     posicion++;
     if(map->buckets[posicion] == NULL) return;
     if(posicion>=map->capacity){
