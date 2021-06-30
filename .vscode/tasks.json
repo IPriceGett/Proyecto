@@ -9,6 +9,8 @@
                 "${file}",
                 "${fileDirname}\\list.c",
                 "${fileDirname}\\functions.c",
+                "${fileDirname}\\Map.c",
+                "${fileDirname}\\treemap.c",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],

@@ -159,4 +159,57 @@ void muestraTablero(Elemento** tablero,int columna, int fila){
         printf("\n");
     }
 }
+
+void seleccionarDificultad(){
+    int dif;
+
+    printf("Por favor ingrese la dificultad en la que desea jugar: \n");
+    printf("1.- Principiante (8x8 , 10 minas)\n");
+    printf("2.- Intermedio (16x16 , 40 minas)\n");
+    printf("3.- Experto (16x26 , 99 minas)\n");
+    printf("4.- Aleatorio\n");
+    printf("5.- Personalizado\n");
+    scanf("%i", &dif);
+
+    Elemento** tableroVisible;
+    Elemento** tableroOculto;
+    char colfilmin[50];
+    char *token;
+    int col, fil, min;
+
+    switch(dif){
+        case 1:
+            tableroVisible = crearTablero(".", 27, 9);
+            tableroOculto = crearTablero("*", 27, 9);
+            muestraTablero(tableroVisible, 27, 9);
+            break;
+        case 2:
+            tableroVisible = crearTablero(".", 51, 17);
+            tableroOculto = crearTablero("*", 51, 17);
+            muestraTablero(tableroVisible, 51, 17);
+            break;
+        case 3:
+            tableroVisible = crearTablero(".", 51, 27);
+            tableroOculto = crearTablero("*", 51, 27);
+            muestraTablero(tableroVisible, 51, 27);
+            break;
+        case 4: /* Generar un tablero aleatorio */
+            break;
+        case 5: /* Hay que definir un máximo de columnas, filas y minas. Dejarlo escrito para el usuario */
+            printf("Ingrese columnas, filas y minas, respectivamente (c,f,m): ");
+            scanf("%s", colfilmin);
+
+            token = strtok(colfilmin, ",");
+            col = atoi(token);
+            token = strtok(NULL, ",");
+            fil = atoi(token);
+            token = strtok(NULL, ",");
+            min = atoi(token);
+
+            tableroVisible = crearTablero(".", ((col+1)*3), (fil+1));
+            tableroOculto = crearTablero("*", ((col+1)*3), (fil+1));
+            muestraTablero(tableroVisible, ((col+1)*3), (fil+1));
+            break;
+    }
+}
     

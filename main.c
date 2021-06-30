@@ -13,9 +13,9 @@ int lower_than_int(void* key1, void* key2){
 int main(){
 
     /* Tablero que contiene las casillas marcadas por el usuario */
-    Elemento** tableroVisible = crearTablero(".",30,10);
+    //Elemento** tableroVisible = crearTablero(".",30,10);
     /* Tablero que econtiene las bombas y no es mostrado al usuario */
-    Elemento** tableroOculto = crearTablero("*",30,10);
+    //Elemento** tableroOculto = crearTablero("*",30,10);
     /* Mapa ordenado que almacena los mejores puntajes */
     TreeMap *puntajes = createTreeMap(lower_than_int);
     /* Almacena las partidas guardadas */
@@ -32,8 +32,7 @@ int main(){
 
         switch(opcion){
             case 1: /* Comenzar a jugar */
-                muestraTablero(tableroVisible,30,10);
-                printf("\nIngrese casilla: ");
+                seleccionarDificultad();
                 break;
             case 2: /* Mostrar instrucciones */
                 break;

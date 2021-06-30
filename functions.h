@@ -11,4 +11,6 @@ void muestraTablero(Elemento** tablero,int fila, int columna);
 
 void menu();
 
+void seleccionarDificultad();
+
 #endif /* FUNCTIONS_H */
