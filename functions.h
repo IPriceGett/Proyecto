@@ -5,12 +5,14 @@ typedef struct Elemento Elemento;
 
 typedef struct Tablero Tablero;
 
+void menu();
+
 Elemento** crearTablero(char* valor, int columnas, int fila);
 
 void muestraTablero(Elemento** tablero,int fila, int columna);
 
-void menu();
+Tablero* inicializarTablero(Tablero* tablero);
 
-void seleccionarDificultad();
+void seleccionarDificultad(Tablero* tablero);
 
 #endif /* FUNCTIONS_H */

@@ -160,7 +160,12 @@ void muestraTablero(Elemento** tablero,int columna, int fila){
     }
 }
 
-void seleccionarDificultad(){
+Tablero* inicializarTablero(Tablero* tablero){
+    tablero = (Tablero *) calloc (1, sizeof(Tablero));
+    return tablero;
+}
+
+void seleccionarDificultad(Tablero* tablero){
     int dif;
 
     printf("Por favor ingrese la dificultad en la que desea jugar: \n");
@@ -171,27 +176,25 @@ void seleccionarDificultad(){
     printf("5.- Personalizado\n");
     scanf("%i", &dif);
 
-    Elemento** tableroVisible;
-    Elemento** tableroOculto;
     char colfilmin[50];
     char *token;
     int col, fil, min;
 
     switch(dif){
         case 1:
-            tableroVisible = crearTablero(".", 27, 9);
-            tableroOculto = crearTablero("*", 27, 9);
-            muestraTablero(tableroVisible, 27, 9);
+            tablero->visible = crearTablero(".", 27, 9);
+            tablero->oculto = crearTablero("*", 27, 9);
+            muestraTablero(tablero->visible, 27, 9);
             break;
         case 2:
-            tableroVisible = crearTablero(".", 51, 17);
-            tableroOculto = crearTablero("*", 51, 17);
-            muestraTablero(tableroVisible, 51, 17);
+            tablero->visible = crearTablero(".", 51, 17);
+            tablero->oculto = crearTablero("*", 51, 17);
+            muestraTablero(tablero->visible, 51, 17);
             break;
         case 3:
-            tableroVisible = crearTablero(".", 51, 27);
-            tableroOculto = crearTablero("*", 51, 27);
-            muestraTablero(tableroVisible, 51, 27);
+            tablero->visible = crearTablero(".", 51, 27);
+            tablero->oculto = crearTablero("*", 51, 27);
+            muestraTablero(tablero->visible, 51, 27);
             break;
         case 4: /* Generar un tablero aleatorio */
             break;
@@ -206,10 +209,9 @@ void seleccionarDificultad(){
             token = strtok(NULL, ",");
             min = atoi(token);
 
-            tableroVisible = crearTablero(".", ((col+1)*3), (fil+1));
-            tableroOculto = crearTablero("*", ((col+1)*3), (fil+1));
-            muestraTablero(tableroVisible, ((col+1)*3), (fil+1));
+            tablero->visible = crearTablero(".", ((col+1)*3), (fil+1));
+            tablero->oculto = crearTablero("*", ((col+1)*3), (fil+1));
+            muestraTablero(tablero->visible, ((col+1)*3), (fil+1));
             break;
     }
 }
-    

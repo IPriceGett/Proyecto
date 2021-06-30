@@ -23,7 +23,8 @@ int main(){
     /* Almacena el mapa de partidas guardadas por nombre de usuario */
     HashMap *usuarios = createMap(50);
 
-
+    Tablero *tablero = inicializarTablero(tablero);
+    
     int opcion;
     do{
         menu();
@@ -32,7 +33,7 @@ int main(){
 
         switch(opcion){
             case 1: /* Comenzar a jugar */
-                seleccionarDificultad();
+                seleccionarDificultad(tablero);
                 break;
             case 2: /* Mostrar instrucciones */
                 break;
