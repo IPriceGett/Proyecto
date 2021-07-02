@@ -7,6 +7,8 @@ typedef struct Elemento Elemento;
 
 typedef struct Tablero Tablero;
 
+typedef struct Usuario Usuario;
+
 void menu();
 
 void instrucciones();
