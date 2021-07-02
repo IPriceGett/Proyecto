@@ -1,7 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include "list.h"
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
 typedef struct {
     char* valor;
@@ -14,8 +20,26 @@ typedef struct {
     Elemento** oculto;
 }Tablero;
 
+/*void fullscreen(){
+    DWORD screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    DWORD screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+    initwindow(screenWidth, screenHeight, "Buscaminas By LOS 3090");
+
+    getch();
+    closegraph();
+}*/
+
 void menu(){
-    printf("\n\n- Menu -\n");
+    printf(" ________  ___  ___  ________  ________  ________  _____ ______   ___  ________   ________  ________           ___       \n");
+    printf(" |\\   __  \\|\\  \\|\\  \\|\\   ____\\|\\   ____\\|\\   __  \\|\\   _ \\  _   \\|\\  \\|\\   ___  \\|\\   __  \\|\\   ____\\         |\\  \\\n");
+    printf("  \\\\  \\|\\ /\\ \\  \\\\\\  \\ \\  \\___|\\ \\  \\___|\\ \\  \\|\\  \\ \\  \\\\\\__\\ \\  \\ \\  \\ \\  \\\\ \\  \\ \\  \\|\\  \\ \\  \\___|_        \\ \\  \\\n");
+    printf("   \\\\   __  \\ \\  \\\\\\  \\ \\_____  \\ \\  \\    \\ \\   __  \\ \\  \\\\|__| \\  \\ \\  \\ \\  \\\\ \\  \\ \\   __  \\ \\_____  \\        \\ \\  \\\n");
+    printf("    \\\\  \\|\\  \\ \\  \\\\\\  \\|____|\\  \\ \\  \\____\\ \\  \\ \\  \\ \\  \\    \\ \\  \\ \\  \\ \\  \\\\ \\  \\ \\  \\ \\  \\|____|\\  \\        \\ \\__\\\n");
+    printf("     \\\\_______\\ \\_______\\____\\_\\  \\ \\_______\\ \\__\\ \\__\\ \\__\\    \\ \\__\\ \\__\\ \\__\\\\ \\__\\ \\__\\ \\__\\____\\_\\  \\        \\|__|\n");
+    printf("      \\|_______|\\|_______|\\_________\\|_______|\\|__|\\|__|\\|__|     \\|__|\\|__|\\|__| \\|__|\\|__|\\|__|\\_________\\           ___ \n");
+    printf("                         \\|_________|                                                           \\|_________|          |\\__\\\n");
+    printf("                                                                                                                      \\|__|\n");
     printf("1.- Jugar!\n");
     printf("2.- Instrucciones.\n");
     printf("3.- Cargar partida\n");
@@ -26,8 +50,10 @@ void menu(){
 
 Elemento** crearTablero(char* valor, int columnas, int fila){
     int i,j;
-    fila += 4;
+    fila += 5; //+= 4
+    columnas = (columnas+1)*3;
     columnas+=11;
+
     Elemento** tablero = (Elemento**)calloc(fila,fila*sizeof(Elemento*)); 
     for( i=0;i<fila;i++){
         tablero[i] = (Elemento*)calloc(columnas,columnas*sizeof(Elemento));
@@ -152,6 +178,8 @@ Elemento** crearTablero(char* valor, int columnas, int fila){
 }
 
 void muestraTablero(Elemento** tablero,int columna, int fila){
+    columna = (columna+1)*3;
+    fila += 1;
     for(int i = 0; i<fila;i++){
         for(int j =0;j<columna;j++){
             printf("%s ",tablero[i][j].valor);
@@ -180,21 +208,22 @@ void seleccionarDificultad(Tablero* tablero){
     char *token;
     int col, fil, min;
 
+    system("cls");
     switch(dif){
         case 1:
-            tablero->visible = crearTablero(".", 27, 9);
-            tablero->oculto = crearTablero("*", 27, 9);
-            muestraTablero(tablero->visible, 27, 9);
+            tablero->visible = crearTablero(".", 8, 8); //27,9
+            tablero->oculto = crearTablero("*", 8, 8);
+            muestraTablero(tablero->visible, 8, 8);
             break;
         case 2:
-            tablero->visible = crearTablero(".", 51, 17);
-            tablero->oculto = crearTablero("*", 51, 17);
-            muestraTablero(tablero->visible, 51, 17);
+            tablero->visible = crearTablero(".", 16, 16); //51,17
+            tablero->oculto = crearTablero("*", 16, 16);
+            muestraTablero(tablero->visible, 16, 16);
             break;
         case 3:
-            tablero->visible = crearTablero(".", 51, 27);
-            tablero->oculto = crearTablero("*", 51, 27);
-            muestraTablero(tablero->visible, 51, 27);
+            tablero->visible = crearTablero(".", 16, 26); //51,27
+            tablero->oculto = crearTablero("*", 16, 26);
+            muestraTablero(tablero->visible, 16, 26);
             break;
         case 4: /* Generar un tablero aleatorio */
             break;
@@ -209,9 +238,69 @@ void seleccionarDificultad(Tablero* tablero){
             token = strtok(NULL, ",");
             min = atoi(token);
 
-            tablero->visible = crearTablero(".", ((col+1)*3), (fil+1));
-            tablero->oculto = crearTablero("*", ((col+1)*3), (fil+1));
-            muestraTablero(tablero->visible, ((col+1)*3), (fil+1));
+            tablero->visible = crearTablero(".", col, fil); // (col+1)*3, fil+1
+            tablero->oculto = crearTablero("*", col, fil);
+            muestraTablero(tablero->visible, col, fil);
             break;
     }
+}
+
+void comenzarJuego(Tablero* tablero){
+    char resp;
+    char minsec[50];
+    int min=0, sec=0;
+    char *token;
+    int flag=1;
+
+    time_t t, t2;
+    struct tm *local, *local2;
+
+    printf("Desea jugar con tiempo? (S/N) ");
+    scanf(" %c", &resp);
+    if(resp=='S' || resp=='s'){
+        printf("Cuanto tiempo maximo desea emplear? (minutos,segundos) ");
+        scanf("%s", minsec);
+
+        token = strtok(minsec, ",");
+        min = atoi(token);
+        token = strtok(NULL, ",");
+        sec = atoi(token);
+
+        t = time(NULL);
+        local = localtime(&t);
+
+        printf("\nDispondras de %i minutos y %i segundos a partir desde ahora (%i:%i:%i)\n",min,sec,local->tm_hour,local->tm_min,local->tm_sec);
+    }else{
+        printf("\nTienes todo el tiempo del mundo para jugar, no te apures!\n");
+    }
+    printf("\n\t\tBuena suerte! :D\n");
+
+    // Aqui va practicamente todo el juego, en algun ciclo (do while quizas), que se repite hasta que encuentre una bomba o ya no hayan casillas vacias disponibles 
+
+/*    if(resp=='S' || resp=='s'){
+        printf("Cuanto tiempo maximo desea emplear? (minutos,segundos)");
+        scanf("%s", minsec);
+
+        token = strtok(minsec, ",");
+        min = atoi(token);
+        token = strtok(NULL, ",");
+        sec = atoi(token);
+
+        while(flag==1){
+            printf("    \r%i:%i",min,sec);
+            Sleep(1000);
+            if(sec!=0) sec--;
+            if(sec==0 && min!=0){
+                sec=59;
+                min--;
+            }
+            if(min==0 && sec==0) flag=0;
+        }
+    }
+*/
+}
+
+void secuenciaPrograma(Tablero* tablero){
+    seleccionarDificultad(tablero);
+    comenzarJuego(tablero);
 }

@@ -12,10 +12,7 @@ int lower_than_int(void* key1, void* key2){
 
 int main(){
 
-    /* Tablero que contiene las casillas marcadas por el usuario */
-    //Elemento** tableroVisible = crearTablero(".",30,10);
-    /* Tablero que econtiene las bombas y no es mostrado al usuario */
-    //Elemento** tableroOculto = crearTablero("*",30,10);
+    //fullscreen();
     /* Mapa ordenado que almacena los mejores puntajes */
     TreeMap *puntajes = createTreeMap(lower_than_int);
     /* Almacena las partidas guardadas */
@@ -33,7 +30,7 @@ int main(){
 
         switch(opcion){
             case 1: /* Comenzar a jugar */
-                seleccionarDificultad(tablero);
+                secuenciaPrograma(tablero);
                 break;
             case 2: /* Mostrar instrucciones */
                 break;

@@ -4,6 +4,7 @@
   "C_Cpp_Runner.debuggerPath": "C:\\MinGW\\bin\\gdb.exe",
   "C_Cpp_Runner.makePath": "C:\\MinGW\\bin\\make.exe",
   "files.associations": {
-    "list.h": "c"
+    "list.h": "c",
+    "stdio.h": "c"
   }
 }
