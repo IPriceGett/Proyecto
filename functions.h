@@ -1,11 +1,17 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
+#include "list.h"
+#include "treemap.h"
 
 typedef struct Elemento Elemento;
 
 typedef struct Tablero Tablero;
 
 void menu();
+
+void instrucciones();
+
+void mostrar_puntajes(TreeMap *puntajes);
 
 Elemento** crearTablero(char* valor, int columnas, int fila);
 

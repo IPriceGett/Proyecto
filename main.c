@@ -36,10 +36,12 @@ int main(){
                 seleccionarDificultad(tablero);
                 break;
             case 2: /* Mostrar instrucciones */
+                instrucciones();
                 break;
             case 3: /* Cargar una partida desde un punto especifico */
                 break;
             case 4: /* Mostrar los mejores puntajes guardados por el usuario */
+                mostrar_puntajes(puntajes);
                 break;
             case 5: /* Salir del programa */
                 break;

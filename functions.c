@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "list.h"
+#include "treemap.h"
+#include "Map.h"
 
 typedef struct {
     char* valor;
@@ -14,14 +16,44 @@ typedef struct {
     Elemento** oculto;
 }Tablero;
 
+typedef struct {
+    char *nombre_usuario;
+    int tiempo;
+}Usuario;
+
 void menu(){
-    printf("\n\n- Menu -\n");
+    printf("\n- Menu -\n");
     printf("1.- Jugar!\n");
     printf("2.- Instrucciones.\n");
     printf("3.- Cargar partida\n");
     printf("4.- Mostrar mejores puntajes\n");
     printf("5.- Salir\n\n");
     printf("Ingrese opcion: ");
+}
+
+void instrucciones(){
+    printf("El juego 'Buscaminas' consiste en despejar un campo minado, sin dejar que estalle ninguna bomba:\n");
+    printf("- El usuario tiene que seleccionar la casilla deseada de acuerdo con su coordenada, de la forma 'A1', \n");
+    printf("siendo 'A', la fila y '1' la columna.\n");
+    printf("- Al seleccionar una casilla sin bomba, esta mostrara un numero que consiste en la cantidad de bombas que\n");
+    printf("contiene esa casilla a su alrededor.\n");
+    printf("- En caso contrario, el usuario perdera el juego y se mostrara el tablero descubierto para visualizar\n");
+    printf("donde se encontraban las demas bombas.\n");
+}
+
+void mostrar_puntajes(TreeMap *puntajes){
+
+    Usuario *iterador = firstTreeMap(puntajes);
+    if (iterador == NULL){
+        printf("No hay puntajes guardados.\n");
+        return;
+    }
+
+    printf("- Puntajes -");
+    while(iterador){
+        printf("%s: %d\n", iterador->nombre_usuario, iterador->tiempo);
+    }
+
 }
 
 Elemento** crearTablero(char* valor, int columnas, int fila){
@@ -166,14 +198,16 @@ Tablero* inicializarTablero(Tablero* tablero){
 }
 
 void seleccionarDificultad(Tablero* tablero){
+
     int dif;
 
-    printf("Por favor ingrese la dificultad en la que desea jugar: \n");
+    printf("- Dificultades -\n");
     printf("1.- Principiante (8x8 , 10 minas)\n");
     printf("2.- Intermedio (16x16 , 40 minas)\n");
     printf("3.- Experto (16x26 , 99 minas)\n");
     printf("4.- Aleatorio\n");
-    printf("5.- Personalizado\n");
+    printf("5.- Personalizado\n\n");
+    printf("Por favor, ingrese la dificultad en la que desea jugar: ");
     scanf("%i", &dif);
 
     char colfilmin[50];
@@ -212,6 +246,11 @@ void seleccionarDificultad(Tablero* tablero){
             tablero->visible = crearTablero(".", ((col+1)*3), (fil+1));
             tablero->oculto = crearTablero("*", ((col+1)*3), (fil+1));
             muestraTablero(tablero->visible, ((col+1)*3), (fil+1));
+            break;
+        default:;
+            dif = 6;
+            printf("Intentelo nuevamente.");
+            getchar();
             break;
     }
 }
