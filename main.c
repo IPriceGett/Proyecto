@@ -12,6 +12,7 @@ int lower_than_int(void* key1, void* key2){
 
 int main(){
 
+    seedRand();
     //fullscreen();
     /* Mapa ordenado que almacena los mejores puntajes */
     TreeMap *puntajes = createTreeMap(lower_than_int);
@@ -44,7 +45,9 @@ int main(){
                 break;
             default:;
                 opcion = 6;
-                printf("Intentelo nuevamente.");
+                printf("Por favor, ingrese una opcion valida.\n");
+                getchar();
+                printf("\nPresione ENTER para continuar.\n");
                 getchar();
                 break;
         }

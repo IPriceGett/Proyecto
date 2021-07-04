@@ -27,18 +27,7 @@ typedef struct {
     int tiempo;
 }Usuario;
 
-/*void fullscreen(){
-    DWORD screenWidth = GetSystemMetrics(SM_CXSCREEN);
-    DWORD screenHeight = GetSystemMetrics(SM_CYSCREEN);
-
-    initwindow(screenWidth, screenHeight, "Buscaminas By LOS 3090");
-
-    getch();
-    closegraph();
-}*/
-
 void menu(){
-    system("cls");
     printf(" ________  ___  ___  ________  ________  ________  _____ ______   ___  ________   ________  ________           ___       \n");
     printf(" |\\   __  \\|\\  \\|\\  \\|\\   ____\\|\\   ____\\|\\   __  \\|\\   _ \\  _   \\|\\  \\|\\   ___  \\|\\   __  \\|\\   ____\\         |\\  \\\n");
     printf("  \\\\  \\|\\ /\\ \\  \\\\\\  \\ \\  \\___|\\ \\  \\___|\\ \\  \\|\\  \\ \\  \\\\\\__\\ \\  \\ \\  \\ \\  \\\\ \\  \\ \\  \\|\\  \\ \\  \\___|_        \\ \\  \\\n");
@@ -64,7 +53,9 @@ void instrucciones(){
     printf("  contiene esa casilla a su alrededor.\n");
     printf("- En caso contrario, el usuario perdera el juego y se mostrara el tablero descubierto para visualizar\n");
     printf("  donde se encontraban las demas bombas.\n\n");
-    system("pause");
+    getchar();
+    printf("Presione ENTER para continuar.");
+    getchar();
 }
 
 void mostrar_puntajes(TreeMap *puntajes){
@@ -72,6 +63,9 @@ void mostrar_puntajes(TreeMap *puntajes){
     Usuario *iterador = firstTreeMap(puntajes);
     if (iterador == NULL){
         printf("No hay puntajes guardados.\n");
+        getchar();
+        printf("\nPresione ENTER para continuar.");
+        getchar();
         return;
     }
 
@@ -79,14 +73,15 @@ void mostrar_puntajes(TreeMap *puntajes){
     while(iterador){
         printf("%s: %d\n", iterador->nombre_usuario, iterador->tiempo);
     }
-
+    getchar();
+    printf("\nPresione ENTER para continuar.");
+    getchar();
 }
 
 Elemento** crearTablero(char* valor, int columnas, int fila){
     int i,j;
-    fila += 5; //+= 4
-    columnas = (columnas+1)*3;
-    columnas+=11;
+    fila += 5;
+    columnas = (columnas+1)*3 + 11;
 
     Elemento** tablero = (Elemento**)calloc(fila,fila*sizeof(Elemento*)); 
     for( i=0;i<fila;i++){
@@ -222,84 +217,48 @@ void muestraTablero(Elemento** tablero,int columna, int fila){
     }
 }
 
+void seedRand(){
+    srand(time(NULL));
+}
+
+int numAleatorio(int min, int max){
+    return min + rand() / (RAND_MAX / (max-min+1) + 1);
+}
+
 Tablero* inicializarTablero(Tablero* tablero){
     tablero = (Tablero *) calloc (1, sizeof(Tablero));
     return tablero;
 }
 
-void seleccionarDificultad(Tablero* tablero){
+void ponerMina(Tablero* tablero, int columna, int fila){
 
-    int dif;
+}
 
-    printf("- Dificultades -\n");
-    printf("1.- Principiante (8x8 , 10 minas)\n");
-    printf("2.- Intermedio (16x16 , 40 minas)\n");
-    printf("3.- Experto (16x26 , 99 minas)\n");
-    printf("4.- Aleatorio\n");
-    printf("5.- Personalizado\n\n");
-    printf("Por favor, ingrese la dificultad en la que desea jugar: ");
-    scanf("%i", &dif);
-
-    char colfilmin[50];
-    char *token;
-    int col, fil, min;
-
-    system("cls");
-    switch(dif){
-        case 1:
-            tablero->visible = crearTablero(".", 8, 8); //27,9
-            tablero->oculto = crearTablero("*", 8, 8);
-            muestraTablero(tablero->visible, 8, 8);
-            break;
-        case 2:
-            tablero->visible = crearTablero(".", 16, 16); //51,17
-            tablero->oculto = crearTablero("*", 16, 16);
-            muestraTablero(tablero->visible, 16, 16);
-            break;
-        case 3:
-            tablero->visible = crearTablero(".", 16, 26); //51,27
-            tablero->oculto = crearTablero("*", 16, 26);
-            muestraTablero(tablero->visible, 16, 26);
-            break;
-        case 4: /* Generar un tablero aleatorio */
-            break;
-        case 5: /* Hay que definir un máximo de columnas, filas y minas. Dejarlo escrito para el usuario */
-            printf("Ingrese columnas, filas y minas, respectivamente (c,f,m): ");
-            scanf("%s", colfilmin);
-
-            token = strtok(colfilmin, ",");
-            col = atoi(token);
-            token = strtok(NULL, ",");
-            fil = atoi(token);
-            token = strtok(NULL, ",");
-            min = atoi(token);
-
-            tablero->visible = crearTablero(".", col, fil); // (col+1)*3, fil+1
-            tablero->oculto = crearTablero("*", col, fil);
-            muestraTablero(tablero->visible, col, fil);
-            break;
-        default:;
-            dif = 6;
-            printf("Intentelo nuevamente.");
-            getchar();
-            break;
+void posMinas(Tablero* tablero, int cantMinas, int cantColumnas, int cantFilas){
+    int columna, fila;
+    for(int i=0; i<cantMinas; i++){
+        columna = numAleatorio(0, cantColumnas);
+        fila = numAleatorio(0, cantFilas);
+        ponerMina(tablero,columna,fila);
     }
 }
 
-void comenzarJuego(Tablero* tablero){
+void comenzarJuego(Tablero* tablero, int columnas, int filas){
     char resp;
     char minsec[50];
     int min=0, sec=0;
     char *token;
+    char coord[50];
     int flag=1;
+    int opcion;
 
     time_t t, t2;
     struct tm *local, *local2;
 
-    printf("Desea jugar con tiempo? (S/N) ");
+    printf("Desea jugar con tiempo? (S/N): ");
     scanf(" %c", &resp);
     if(resp=='S' || resp=='s'){
-        printf("Cuanto tiempo maximo desea emplear? (minutos,segundos) ");
+        printf("Cuanto tiempo maximo desea emplear? (minutos,segundos): ");
         scanf("%s", minsec);
 
         token = strtok(minsec, ",");
@@ -314,34 +273,122 @@ void comenzarJuego(Tablero* tablero){
     }else{
         printf("\nTienes todo el tiempo del mundo para jugar, no te apures!\n");
     }
-    printf("\n\t\tBuena suerte! :D\n");
+    printf("\n\t\tBuena suerte! :D\n\n");
+    getchar();
+    printf("Presione ENTER para comenzar a jugar");
+    getchar();
 
-    // Aqui va practicamente todo el juego, en algun ciclo (do while quizas), que se repite hasta que encuentre una bomba o ya no hayan casillas vacias disponibles 
+    do{
+        system("cls");
+        muestraTablero(tablero->visible,columnas,filas);
+        printf("\n- OPCIONES -\n");
+        printf("1.- Desbloquear una casilla || 2.- Guardar la partida || 3.-Salir al menu principal\n");
+        scanf(" %i", &opcion);
 
-/*    if(resp=='S' || resp=='s'){
-        printf("Cuanto tiempo maximo desea emplear? (minutos,segundos)");
-        scanf("%s", minsec);
+        switch(opcion){
+            case 1: /* Despejar casilla */
+                printf("Ingrese la coordenada de la casilla (letra,numero): ");
+                scanf("%s",coord);
 
-        token = strtok(minsec, ",");
-        min = atoi(token);
-        token = strtok(NULL, ",");
-        sec = atoi(token);
-
-        while(flag==1){
-            printf("    \r%i:%i",min,sec);
-            Sleep(1000);
-            if(sec!=0) sec--;
-            if(sec==0 && min!=0){
-                sec=59;
-                min--;
-            }
-            if(min==0 && sec==0) flag=0;
+                /* Falta revisar si hay bomba, y si no, revisar si tiene al rededor */
+                break;
+            case 2: /* Funcion guardarPartida */
+                break;
+            case 3: /* Salir al menu */
+                break;
+            default:;
+                opcion = 4;
+                printf("Por favor, ingrese una opcion valida.\n");
+                getchar();
+                printf("Presione ENTER para continuar.\n");
+                getchar();
+                break;
         }
+    }while(opcion!=3);
+
+    /*Sleep(10000);
+    t2 = time(NULL);
+    local2 = localtime(&t2);
+
+    printf("\n %i:%i:%i \n", local2->tm_hour, local2->tm_min, local2->tm_sec);
+
+    double tiempoEmpleado = (difftime(t2,t))/60;
+
+    printf("\n\tHan pasado %.0lf minutos! \n",tiempoEmpleado);*/
+}
+
+void seleccionarDificultad(Tablero* tablero){
+
+    int dif;
+
+    printf("- Dificultades -\n");
+    printf("1.- Principiante (8x8 , 10 minas)\n");
+    printf("2.- Intermedio (16x16 , 40 minas)\n");
+    printf("3.- Experto (16x26 , 65 minas)\n");
+    printf("4.- Aleatorio\n");
+    printf("5.- Personalizado\n\n");
+    printf("Por favor, ingrese la dificultad en la que desea jugar: ");
+    scanf("%i", &dif);
+
+    char colfilmin[50];
+    char *token;
+    int col, fil, min, randFila, randColu, randMinas, maxRandMinas;
+
+    system("cls");
+    switch(dif){
+        case 1:
+            tablero->visible = crearTablero(".", 8, 8);
+            tablero->oculto = crearTablero("*", 8, 8);
+            muestraTablero(tablero->visible, 8, 8);
+            comenzarJuego(tablero,8,8);
+            break;
+        case 2:
+            tablero->visible = crearTablero(".", 16, 16);
+            tablero->oculto = crearTablero("*", 16, 16);
+            muestraTablero(tablero->visible, 16, 16);
+            comenzarJuego(tablero,16,16);
+            break;
+        case 3:
+            tablero->visible = crearTablero(".", 16, 26);
+            tablero->oculto = crearTablero("*", 16, 26);
+            muestraTablero(tablero->visible, 16, 26);
+            comenzarJuego(tablero,16,26);
+            break;
+        case 4: /* Generar un tablero aleatorio */
+            randFila = numAleatorio(3,26);
+            randColu = numAleatorio(3,26);
+            maxRandMinas = randFila * randColu * 15.625 / 100;
+            randMinas = numAleatorio(1,maxRandMinas);
+            tablero->visible = crearTablero(".",randColu,randFila);
+            tablero->oculto = crearTablero("*",randColu,randFila);
+            posMinas(tablero,randMinas,randColu,randFila); // EJEMPLO USO FUNCION
+            muestraTablero(tablero->visible,randColu,randFila);
+            comenzarJuego(tablero,randColu,randFila);
+            break;
+        case 5: /* Hay que definir un máximo de columnas, filas y minas. Dejarlo escrito para el usuario */
+            printf("Ingrese columnas, filas y minas, respectivamente (c,f,m): ");
+            scanf("%s", colfilmin);
+
+            token = strtok(colfilmin, ",");
+            col = atoi(token);
+            token = strtok(NULL, ",");
+            fil = atoi(token);
+            token = strtok(NULL, ",");
+            min = atoi(token);
+
+            tablero->visible = crearTablero(".", col, fil);
+            tablero->oculto = crearTablero("*", col, fil);
+            muestraTablero(tablero->visible, col, fil);
+            comenzarJuego(tablero,col,fil);
+            break;
+        default:;
+            dif = 6;
+            printf("Intentelo nuevamente.");
+            getchar();
+            break;
     }
-*/
 }
 
 void secuenciaPrograma(Tablero* tablero){
     seleccionarDificultad(tablero);
-    comenzarJuego(tablero);
 }
