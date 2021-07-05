@@ -7,13 +7,13 @@
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "c:\\Users\\Administrador\\Documents\\Codes\\Proyecto\\Proyecto",
+      "cwd": "${workspaceFolder}",
       "environment": [],
-      "program": "c:\\Users\\Administrador\\Documents\\Codes\\Proyecto\\Proyecto\\build\\Debug\\outDebug",
+      "program": "${workspaceFolder}\\main.exe",
       "internalConsoleOptions": "openOnSessionStart",
       "MIMode": "gdb",
       "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
-      "externalConsole": false
+      "externalConsole": true
     }
   ]
 }

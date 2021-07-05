@@ -12,7 +12,7 @@
 #include "Map.h"
 
 typedef struct {
-    char valor[3];
+    char* valor;
     int coordenadas[2];
     int seleccionado;
 }Elemento;
@@ -81,12 +81,12 @@ void mostrar_puntajes(TreeMap *puntajes){
 Elemento** crearTablero(char* valor, int columnas, int fila){
     int i,j;
     fila += 1;
-    columnas = (columnas+1)*3-2;
-
+    columnas+=11;
     Elemento** tablero = (Elemento**)calloc(fila,fila*sizeof(Elemento*)); 
     for( i=0;i<fila;i++){
         tablero[i] = (Elemento*)calloc(columnas,columnas*sizeof(Elemento));
         for( j=0;j<columnas;j++){
+            tablero[i][j].valor = (char*)malloc(3*sizeof(char)); 
             if (i == 0 && j == 0)
                 strcpy(tablero[i][j].valor," ");
             else if (i == 0 && j == 3)
@@ -205,9 +205,45 @@ Elemento** crearTablero(char* valor, int columnas, int fila){
             
     return tablero;
 }
+Elemento** InsertarBombas(Elemento** tablero,int cantidadBombas, int columna, int fila){
+    int m=0;
+    while(m<cantidadBombas){
+        srand(time(NULL));
+        int i = rand() % (fila-1);
+        int j = (rand() % (fila-1))*3;
+        if(strcmp(tablero[i][j].valor,"0")==0){
+            m++;
+            tablero[i][j].valor="*";
+        }
+    }
+    return tablero;
+}
+
+Elemento** InsertarPistas(Elemento** tablero,int columna, int fila){
+    for(int i=0;i<fila+1;i++){
+        for(int j=0;j<35;j++){
+            if(strcmp(tablero[i][j].valor,"*")==0){
+                for(int x=-1;x<=1;x++){
+                    for(int y=-3;y<=3;y+=3){
+                        if(1<=x+i && x+i<=25 && 3<=j+y && j+y<=75){
+                            if(strcmp(tablero[x+i][j+y].valor,"*")!=0){
+                                int aux = atoi(tablero[x+i][j+y].valor);
+                                aux=aux+1;
+                                char aux2[2];
+                                itoa(aux,aux2,10);
+                                tablero[x+i][j+y].valor=aux2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return tablero;
+}
 
 void muestraTablero(Elemento** tablero,int columna, int fila){
-    columna = (columna+1)*3-2;
+    columna +=11;
     fila += 1;
     for(int i = 0; i<fila;i++){
         for(int j =0;j<columna;j++){
@@ -337,20 +373,24 @@ void seleccionarDificultad(Tablero* tablero){
     system("cls");
     switch(dif){
         case 1:
-            tablero->visible = crearTablero(".", 8, 8);
-            tablero->oculto = crearTablero("*", 8, 8);
-            muestraTablero(tablero->visible, 8, 8);
+            tablero->visible = crearTablero(".", 15, 8);
+            tablero->oculto = crearTablero("0", 24, 8);
+            tablero->oculto=InsertarBombas(tablero->oculto,8,23,8);
+            tablero->oculto = InsertarPistas(tablero->oculto,24,8);
+            muestraTablero(tablero->oculto, 24, 8);
+            printf("\n\n");
+            muestraTablero(tablero->visible, 15, 8);
             comenzarJuego(tablero,8,8);
             break;
         case 2:
             tablero->visible = crearTablero(".", 16, 16);
-            tablero->oculto = crearTablero("*", 16, 16);
+            tablero->oculto = crearTablero("0", 16, 16);
             muestraTablero(tablero->visible, 16, 16);
             comenzarJuego(tablero,16,16);
             break;
         case 3:
             tablero->visible = crearTablero(".", 26, 16);
-            tablero->oculto = crearTablero("*", 26, 16);
+            tablero->oculto = crearTablero("0", 26, 16);
             muestraTablero(tablero->visible, 26, 16);
             comenzarJuego(tablero,26,16);
             break;
@@ -360,7 +400,7 @@ void seleccionarDificultad(Tablero* tablero){
             maxRandMinas = randFila * randColu * 25.625 / 100;
             randMinas = numAleatorio(1,maxRandMinas);
             tablero->visible = crearTablero(".",randColu,randFila);
-            tablero->oculto = crearTablero("*",randColu,randFila);
+            tablero->oculto = crearTablero("0",randColu,randFila);
             posMinas(tablero,randMinas,randColu,randFila); // EJEMPLO USO FUNCION
             muestraTablero(tablero->visible,randColu,randFila);
             comenzarJuego(tablero,randColu,randFila);
@@ -377,7 +417,7 @@ void seleccionarDificultad(Tablero* tablero){
             min = atoi(token);
 
             tablero->visible = crearTablero(".", col, fil);
-            tablero->oculto = crearTablero("*", col, fil);
+            tablero->oculto = crearTablero("0", col, fil);
             muestraTablero(tablero->visible, col, fil);
             comenzarJuego(tablero,col,fil);
             break;
