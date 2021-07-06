@@ -9,8 +9,6 @@ typedef struct Tablero Tablero;
 
 typedef struct Usuario Usuario;
 
-void fullscreen();
-
 void menu();
 
 void instrucciones();
@@ -36,7 +34,5 @@ void comenzarJuego(Tablero* tablero);
 void seleccionarDificultad(Tablero* tablero);
 
 void secuenciaPrograma(Tablero* tablero);
-
-void guardarPartida(Tablero* tablero, int fila, int columna);
 
 #endif /* FUNCTIONS_H */
