@@ -37,4 +37,6 @@ void seleccionarDificultad(Tablero* tablero);
 
 void secuenciaPrograma(Tablero* tablero);
 
+void guardarPartida(Tablero* tablero, int fila, int columna);
+
 #endif /* FUNCTIONS_H */

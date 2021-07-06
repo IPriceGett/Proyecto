@@ -266,6 +266,42 @@ Tablero* inicializarTablero(Tablero* tablero){
     return tablero;
 }
 
+void guardarPartida(Tablero* tablero, int fila, int columna)
+{
+    char archivo[30];
+    printf("Por favor ingrese su nombre de usuario??? ");
+    getchar();
+
+    fgets(archivo, 30, stdin);
+    archivo[strlen(archivo) - 1] = '\0';
+
+    FILE *archivoSalida = fopen(archivo, "w");
+    if(archivoSalida == NULL){
+        printf("No se pudo crear el archivo");
+        return;
+    }
+
+    fprintf(archivoSalida, "%i,%i,", fila, columna);
+
+    columna +=11;
+    fila += 1;
+    for(int i = 0; i<fila;i++){
+        for(int j =0;j<columna;j++){
+            fprintf(archivoSalida, "%s,",tablero->oculto[i][j].valor);
+        }
+    }
+
+    for(int i = 0; i<fila;i++){
+        for(int j =0;j<columna;j++){
+            fprintf(archivoSalida, "%s,",tablero->visible[i][j].valor);
+        }
+    }
+
+    if (fclose(archivoSalida) == EOF){
+        printf("El archivo no se pudo cerrar correctamente.");
+    }
+
+}
 
 void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
     char resp;
@@ -382,6 +418,7 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
                     if(contador == 0) printf("ganaste");
                 break;
             case 2: /* Funcion guardarPartida */
+                guardarPartida(tablero, filas, columnas);
                 break;
             case 3: /* Salir al menu */
                 break;
