@@ -124,23 +124,23 @@ Elemento** crearTablero(char* valor, int columnas, int fila){
                 strcpy(tablero[i][j].valor,"16");
             else if (i == 0 && j == 50)
                 strcpy(tablero[i][j].valor,"17");
-            else if (i == 0 && j == 54)
+            else if (i == 0 && j == 53)
                 strcpy(tablero[i][j].valor,"18");
             else if (i == 0 && j == 56)
                 strcpy(tablero[i][j].valor,"19");
-            else if (i == 0 && j == 60)
+            else if (i == 0 && j == 59)
                 strcpy(tablero[i][j].valor,"20");
             else if (i == 0 && j == 62)
                 strcpy(tablero[i][j].valor,"21");
-            else if (i == 0 && j == 66)
+            else if (i == 0 && j == 65)
                 strcpy(tablero[i][j].valor,"22");
             else if (i == 0 && j == 68)
                 strcpy(tablero[i][j].valor,"23");
-            else if (i == 0 && j == 72)
+            else if (i == 0 && j == 71)
                 strcpy(tablero[i][j].valor,"24");
             else if (i == 0 && j == 74)
                 strcpy(tablero[i][j].valor,"25");
-            else if (i == 0 && j == 78)
+            else if (i == 0 && j == 77)
                 strcpy(tablero[i][j].valor,"26");
             else if (i == 1 && j == 0)
                 strcpy(tablero[i][j].valor,"A");
