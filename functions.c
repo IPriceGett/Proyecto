@@ -86,7 +86,8 @@ Elemento** crearTablero(char* valor, int columnas, int fila){
     for( i=0;i<fila;i++){
         tablero[i] = (Elemento*)calloc(columnas,columnas*sizeof(Elemento));
         for( j=0;j<columnas;j++){
-            tablero[i][j].valor = (char*)malloc(3*sizeof(char)); 
+            tablero[i][j].valor = (char*)malloc(3*sizeof(char));
+            strcpy(tablero[i][j].valor,"");
             if (i == 0 && j == 0)
                 strcpy(tablero[i][j].valor," ");
             else if (i == 0 && j == 3)
@@ -111,15 +112,15 @@ Elemento** crearTablero(char* valor, int columnas, int fila){
                 strcpy(tablero[i][j].valor,"10");
             else if (i == 0 &&j == 32)
                 strcpy(tablero[i][j].valor,"11");
-            else if (i == 0 &&j == 36)
+            else if (i == 0 &&j == 35)
                 strcpy(tablero[i][j].valor,"12");
             else if (i == 0 && j == 38)
                 strcpy(tablero[i][j].valor,"13");
-            else if (i == 0 && j == 42)
+            else if (i == 0 && j == 41)
                 strcpy(tablero[i][j].valor,"14");
             else if (i == 0 && j == 44)
                 strcpy(tablero[i][j].valor,"15");
-            else if (i == 0 && j == 48)
+            else if (i == 0 && j == 47)
                 strcpy(tablero[i][j].valor,"16");
             else if (i == 0 && j == 50)
                 strcpy(tablero[i][j].valor,"17");
@@ -210,7 +211,7 @@ Elemento** InsertarBombas(Elemento** tablero,int cantidadBombas, int columna, in
     while(m<cantidadBombas){
         srand(time(NULL));
         int i = rand() % (fila-1);
-        int j = (rand() % (fila-1))*3;
+        int j = (rand() % (columna/3+3))*3;
         if(strcmp(tablero[i][j].valor,"0")==0){
             m++;
             tablero[i][j].valor="*";
@@ -219,9 +220,9 @@ Elemento** InsertarBombas(Elemento** tablero,int cantidadBombas, int columna, in
     return tablero;
 }
 
-Elemento** InsertarPistas(Elemento** tablero,int columna, int fila){
+void InsertarPistas(Elemento** tablero,int columna, int fila){
     for(int i=0;i<fila+1;i++){
-        for(int j=0;j<35;j++){
+        for(int j=0;j<columna+11;j++){
             if(strcmp(tablero[i][j].valor,"*")==0){
                 for(int x=-1;x<=1;x++){
                     for(int y=-3;y<=3;y+=3){
@@ -231,7 +232,7 @@ Elemento** InsertarPistas(Elemento** tablero,int columna, int fila){
                                 aux=aux+1;
                                 char aux2[2];
                                 itoa(aux,aux2,10);
-                                tablero[x+i][j+y].valor=aux2;
+                                strcpy(tablero[x+i][j+y].valor,aux2);
                             }
                         }
                     }
@@ -239,7 +240,6 @@ Elemento** InsertarPistas(Elemento** tablero,int columna, int fila){
             }
         }
     }
-    return tablero;
 }
 
 void muestraTablero(Elemento** tablero,int columna, int fila){
@@ -266,20 +266,8 @@ Tablero* inicializarTablero(Tablero* tablero){
     return tablero;
 }
 
-void ponerMina(Tablero* tablero, int columna, int fila){
 
-}
-
-void posMinas(Tablero* tablero, int cantMinas, int cantColumnas, int cantFilas){
-    int columna, fila;
-    for(int i=0; i<cantMinas; i++){
-        columna = numAleatorio(0, cantColumnas);
-        fila = numAleatorio(0, cantFilas);
-        ponerMina(tablero,columna,fila);
-    }
-}
-
-void comenzarJuego(Tablero* tablero, int columnas, int filas){
+void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
     char resp;
     char minsec[50];
     int min=0, sec=0;
@@ -287,10 +275,11 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas){
     char coord[50];
     int flag=1;
     int opcion;
-
+    char* aux;
     time_t t, t2;
     struct tm *local, *local2;
-
+    int contador;
+    contador = filas*(columnas/3+3)*-1 + bombas;
     printf("Desea jugar con tiempo? (S/N): ");
     scanf(" %c", &resp);
     if(resp=='S' || resp=='s'){
@@ -324,9 +313,73 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas){
         switch(opcion){
             case 1: /* Despejar casilla */
                 printf("Ingrese la coordenada de la casilla (letra,numero): ");
-                scanf("%s",coord);
-
-                /* Falta revisar si hay bomba, y si no, revisar si tiene al rededor */
+                getchar();
+                char coordenada[4];
+                fgets(coordenada,4,stdin);
+                char letra[2];
+                int x;
+                aux = strtok(coordenada,",");
+                strcpy(letra,aux);
+                    if (strcmp(letra,"A")==0 || strcmp(letra,"a")==0)
+                        x  = 1;
+                    else if (strcmp(letra,"B")==0 || strcmp(letra,"b")==0)
+                        x  = 2;
+                    else if (strcmp(letra,"C")==0 || strcmp(letra,"c")==0)
+                        x  = 3;
+                    else if (strcmp(letra,"D")==0 || strcmp(letra,"d")==0)
+                        x  = 4;
+                    else if (strcmp(letra,"E")==0 || strcmp(letra,"e")==0)
+                        x  = 5;
+                    else if (strcmp(letra,"F")==0 || strcmp(letra,"f")==0)
+                        x  = 6;
+                    else if (strcmp(letra,"G")==0 || strcmp(letra,"g")==0)
+                        x  = 7;
+                    else if (strcmp(letra,"H")==0 || strcmp(letra,"h")==0)
+                        x  = 8;
+                    else if (strcmp(letra,"I")==0 || strcmp(letra,"i")==0)
+                        x  = 9;
+                    else if (strcmp(letra,"J")==0 || strcmp(letra,"j")==0)
+                        x  = 10;
+                    else if (strcmp(letra,"K")==0 || strcmp(letra,"k")==0)
+                        x  = 11;
+                    else if (strcmp(letra,"L")==0 || strcmp(letra,"l")==0)
+                        x  = 12;
+                    else if (strcmp(letra,"M")==0 || strcmp(letra,"m")==0)
+                        x  = 13;
+                    else if (strcmp(letra,"N")==0 || strcmp(letra,"n")==0)
+                        x  = 14;
+                    else if (strcmp(letra,"O")==0 || strcmp(letra,"o")==0)
+                        x  = 15;
+                    else if (strcmp(letra,"P")==0 || strcmp(letra,"p")==0)
+                        x  = 16;
+                    else if (strcmp(letra,"Q")==0 || strcmp(letra,"q")==0)
+                        x  = 17;
+                    else if (strcmp(letra,"R")==0 || strcmp(letra,"r")==0)
+                        x  = 18;
+                    else if (strcmp(letra,"S")==0 || strcmp(letra,"s")==0)
+                        x  = 19;
+                    else if (strcmp(letra,"T")==0 || strcmp(letra,"t")==0)
+                        x  = 20;
+                    else if (strcmp(letra,"U")==0 || strcmp(letra,"u")==0)
+                        x  = 21;
+                    else if (strcmp(letra,"V")==0 || strcmp(letra,"v")==0)
+                        x  = 22;
+                    else if (strcmp(letra,"W")==0 || strcmp(letra,"w")==0)
+                        x  = 23;
+                    else if (strcmp(letra,"X")==0 || strcmp(letra,"x")==0)
+                        x  = 24;
+                    else if (strcmp(letra,"Y")==0 || strcmp(letra,"y")==0)
+                        x  = 25;
+                    else if (strcmp(letra,"Z")==0 || strcmp(letra,"z")==0)
+                        x  = 26;
+                    int y;
+                    aux = strtok(NULL,",");
+                    y = atoi(aux)*3;
+                    if(strcmp(tablero->oculto[x][y].valor,"*")==0) printf("perdiste");
+                    if(strcmp(tablero->oculto[x][y].valor," ")!=0)
+                        strcpy(tablero->visible[x][y].valor,tablero->oculto[x][y].valor);
+                    contador+=1;
+                    if(contador == 0) printf("ganaste");
                 break;
             case 2: /* Funcion guardarPartida */
                 break;
@@ -375,35 +428,46 @@ void seleccionarDificultad(Tablero* tablero){
         case 1:
             tablero->visible = crearTablero(".", 15, 8);
             tablero->oculto = crearTablero("0", 24, 8);
-            tablero->oculto=InsertarBombas(tablero->oculto,8,23,8);
-            tablero->oculto = InsertarPistas(tablero->oculto,24,8);
-            muestraTablero(tablero->oculto, 24, 8);
-            printf("\n\n");
+            printf("Generando partida...");
+            tablero->oculto=InsertarBombas(tablero->oculto,10,15,8);
+            InsertarPistas(tablero->oculto,15,8);
+            system("cls");
             muestraTablero(tablero->visible, 15, 8);
-            comenzarJuego(tablero,8,8);
+            comenzarJuego(tablero,15,8,10);
             break;
         case 2:
-            tablero->visible = crearTablero(".", 16, 16);
-            tablero->oculto = crearTablero("0", 16, 16);
-            muestraTablero(tablero->visible, 16, 16);
-            comenzarJuego(tablero,16,16);
+            tablero->visible = crearTablero(".", 39, 16);
+            tablero->oculto = crearTablero("0", 48, 16);
+            printf("Generando partida...");
+            tablero->oculto=InsertarBombas(tablero->oculto,40,39,16);
+            InsertarPistas(tablero->oculto,39,16);
+            system("cls");
+            muestraTablero(tablero->visible, 39, 16);
+            comenzarJuego(tablero,39,16,40);
             break;
         case 3:
-            tablero->visible = crearTablero(".", 26, 16);
-            tablero->oculto = crearTablero("0", 26, 16);
-            muestraTablero(tablero->visible, 26, 16);
-            comenzarJuego(tablero,26,16);
+            tablero->visible = crearTablero(".", 39, 26);
+            tablero->oculto = crearTablero("0", 48, 26);
+            printf("Generando partida...");
+            tablero->oculto=InsertarBombas(tablero->oculto,65,47,26);
+            InsertarPistas(tablero->oculto,39,26);
+            system("cls");
+            muestraTablero(tablero->visible, 39, 26);
+            comenzarJuego(tablero,39,26,65);
             break;
         case 4: /* Generar un tablero aleatorio */
             randFila = numAleatorio(3,26);
             randColu = numAleatorio(3,26);
             maxRandMinas = randFila * randColu * 25.625 / 100;
             randMinas = numAleatorio(1,maxRandMinas);
-            tablero->visible = crearTablero(".",randColu,randFila);
-            tablero->oculto = crearTablero("0",randColu,randFila);
-            posMinas(tablero,randMinas,randColu,randFila); // EJEMPLO USO FUNCION
-            muestraTablero(tablero->visible,randColu,randFila);
-            comenzarJuego(tablero,randColu,randFila);
+            tablero->visible = crearTablero(".",(randColu-3)*3,randFila);
+            tablero->oculto = crearTablero("0",randColu*3,randFila);
+            printf("Generando partida...");
+            tablero->oculto=InsertarBombas(tablero->oculto,randMinas,(randColu-3)*3,randFila);
+            InsertarPistas(tablero->oculto,randColu*3,randFila);
+            system("cls");
+            muestraTablero(tablero->visible,(randColu-3)*3,randFila);
+            comenzarJuego(tablero,(randColu-3)*3,randFila,randMinas);
             break;
         case 5: /* Hay que definir un máximo de columnas, filas y minas. Dejarlo escrito para el usuario */
             printf("Ingrese columnas, filas y minas, respectivamente (c,f,m): ");
@@ -416,10 +480,14 @@ void seleccionarDificultad(Tablero* tablero){
             token = strtok(NULL, ",");
             min = atoi(token);
 
-            tablero->visible = crearTablero(".", col, fil);
-            tablero->oculto = crearTablero("0", col, fil);
-            muestraTablero(tablero->visible, col, fil);
-            comenzarJuego(tablero,col,fil);
+            tablero->visible = crearTablero(".", (col-3)*3, fil);
+            tablero->oculto = crearTablero("0", col*3, fil);
+            printf("Generando partida...");
+            tablero->oculto=InsertarBombas(tablero->oculto,min,(col-3)*3,fil);
+            InsertarPistas(tablero->oculto,(col-3)*3,fil);
+            system("cls");
+            muestraTablero(tablero->visible, (col-3)*3, fil);
+            comenzarJuego(tablero,(col-3)*3,fil,min);
             break;
         default:;
             dif = 6;
