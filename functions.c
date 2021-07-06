@@ -209,7 +209,6 @@ Elemento** crearTablero(char* valor, int columnas, int fila){
 Elemento** InsertarBombas(Elemento** tablero,int cantidadBombas, int columna, int fila){
     int m=0;
     while(m<cantidadBombas){
-        srand(time(NULL));
         int i = rand() % (fila-1);
         int j = (rand() % (columna/3+3))*3;
         if(strcmp(tablero[i][j].valor,"0")==0){
@@ -351,8 +350,8 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
             case 1: /* Despejar casilla */
                 printf("Ingrese la coordenada de la casilla (letra,numero): ");
                 getchar();
-                char coordenada[4];
-                fgets(coordenada,4,stdin);
+                char coordenada[5];
+                fgets(coordenada,5,stdin);
                 char letra[2];
                 int x;
                 aux = strtok(coordenada,",");
@@ -412,14 +411,25 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
                     int y;
                     aux = strtok(NULL,",");
                     y = atoi(aux)*3;
-                    if(strcmp(tablero->oculto[x][y].valor,"*")==0) printf("perdiste");
+                    if(strcmp(tablero->oculto[x][y].valor,"*")==0){
+                        muestraTablero(tablero->oculto,columnas,filas);
+                        printf("\nHas perdido :(\n");
+                        printf("\nPresione ENTER para continuar.");
+                        getchar();
+                        return;
+                    }
                     if(strcmp(tablero->oculto[x][y].valor," ")!=0)
                         strcpy(tablero->visible[x][y].valor,tablero->oculto[x][y].valor);
                     contador+=1;
-                    if(contador == 0) printf("ganaste");
+                    if(contador == 0){
+                        muestraTablero(tablero->oculto,columnas,filas);
+                        printf("\nHas ganado :)\n");
+                        printf("\nPresione ENTER para continuar.");
+                        getchar();
+                        return;
+                    }
                 break;
             case 2: /* Funcion guardarPartida */
-                guardarPartida(tablero, filas, columnas);
                 break;
             case 3: /* Salir al menu */
                 break;
@@ -550,7 +560,7 @@ void seleccionarDificultad(Tablero* tablero){
         case 4: /* Generar un tablero aleatorio */
             randFila = numAleatorio(3,26);
             randColu = numAleatorio(3,26);
-            maxRandMinas = randFila * randColu * 25.625 / 100;
+            maxRandMinas = randFila * randColu * 15.625 / 100;
             randMinas = numAleatorio(1,maxRandMinas);
             tablero->visible = crearTablero(".",(randColu-3)*3,randFila);
             tablero->oculto = crearTablero("0",randColu*3,randFila);

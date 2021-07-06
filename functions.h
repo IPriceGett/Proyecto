@@ -9,8 +9,6 @@ typedef struct Tablero Tablero;
 
 typedef struct Usuario Usuario;
 
-void fullscreen();
-
 void menu();
 
 void instrucciones();
@@ -27,10 +25,6 @@ int numAleatorio(int min, int max);
 
 Tablero* inicializarTablero(Tablero* tablero);
 
-void ponerMina(Tablero** tablero, int columna, int fila);
-
-void posMinas(Tablero** tablero, int cantMinas, int cantColumnas, int cantFilas);
-
 void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas);
 
 void seleccionarDificultad(Tablero* tablero);
@@ -40,5 +34,9 @@ void secuenciaPrograma(Tablero* tablero);
 void guardarPartida(Tablero* tablero, int fila, int columna);
 
 void cargarPartida(Tablero* tablero);
+
+void InsertarPistas(Elemento** tablero,int columna, int fila);
+
+Elemento** InsertarBombas(Elemento** tablero,int cantidadBombas, int columna, int fila);
 
 #endif /* FUNCTIONS_H */
