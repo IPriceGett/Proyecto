@@ -37,6 +37,7 @@ int main(){
                 instrucciones();
                 break;
             case 3: /* Cargar una partida desde un punto especifico */
+                cargarPartida(tablero);
                 break;
             case 4: /* Mostrar los mejores puntajes guardados por el usuario */
                 mostrar_puntajes(puntajes);

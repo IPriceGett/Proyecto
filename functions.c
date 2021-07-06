@@ -266,10 +266,12 @@ Tablero* inicializarTablero(Tablero* tablero){
     return tablero;
 }
 
+
+
 void guardarPartida(Tablero* tablero, int fila, int columna)
 {
     char archivo[30];
-    printf("Por favor ingrese su nombre de usuario??? ");
+    printf("Por favor ingrese el nombre que desea ponerle a la partida (.csv): ");
     getchar();
 
     fgets(archivo, 30, stdin);
@@ -300,7 +302,6 @@ void guardarPartida(Tablero* tablero, int fila, int columna)
     if (fclose(archivoSalida) == EOF){
         printf("El archivo no se pudo cerrar correctamente.");
     }
-
 }
 
 void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
@@ -442,6 +443,60 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
 
     printf("\n\tHan pasado %.0lf minutos! \n",tiempoEmpleado);*/
 }
+
+void cargarPartida(Tablero* tablero)
+{   
+    char archivo[30];
+    printf("Por favor ingrese el archivo que se desea leer (.csv): ");
+    getchar();
+    
+    fgets(archivo, 30, stdin);
+    archivo[strlen(archivo) - 1] = '\0';
+
+    FILE *archivoEntrada = fopen(archivo, "r");
+    if (archivoEntrada == NULL){
+        printf("El archivo no se pudo abrir en modo lectura");
+        return;
+    }
+
+    char linea[3000];
+    char *token;
+    int fila, columna;
+    int bombas = 0;
+    char* valor;
+    
+    while(fgets(linea, 2999, archivoEntrada))
+    {
+        token = strtok(linea, ",");
+        fila = atoi(token);
+        token = strtok(NULL, ",");
+        columna = atoi(token);
+
+        tablero->oculto = crearTablero("0", columna, fila);
+        tablero->visible = crearTablero(".", columna, fila);
+
+        for(int i = 0; i<fila;i++){
+            for(int j =0;j<columna;j++){
+                token = strtok(NULL, ",");
+                valor = token;
+                if(strcmp(valor, "*") == 0) bombas++;
+                tablero->oculto[i][j].valor = valor;
+            }
+        }
+
+        for(int i = 0; i<fila;i++){
+            for(int j =0;j<columna;j++){
+                token = strtok(NULL, ",");
+                valor = token;
+                tablero->visible[i][j].valor = valor;
+            }
+        }
+    }
+    muestraTablero(tablero->oculto, 15, 8);
+    //muestraTablero(tablero->visible, 15, 8);
+    //comenzarJuego(tablero, columna, fila, bombas);
+}
+
 
 void seleccionarDificultad(Tablero* tablero){
 

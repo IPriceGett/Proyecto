@@ -31,12 +31,14 @@ void ponerMina(Tablero** tablero, int columna, int fila);
 
 void posMinas(Tablero** tablero, int cantMinas, int cantColumnas, int cantFilas);
 
-void comenzarJuego(Tablero* tablero);
+void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas);
 
 void seleccionarDificultad(Tablero* tablero);
 
 void secuenciaPrograma(Tablero* tablero);
 
 void guardarPartida(Tablero* tablero, int fila, int columna);
+
+void cargarPartida(Tablero* tablero);
 
 #endif /* FUNCTIONS_H */
