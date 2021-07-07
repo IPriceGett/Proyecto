@@ -13,8 +13,6 @@
 
 typedef struct {
     char* valor;
-    int coordenadas[2];
-    int seleccionado;
 }Elemento;
 
 typedef struct {
