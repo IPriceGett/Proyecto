@@ -23,8 +23,8 @@ typedef struct {
 }Tablero;
 
 typedef struct {
-    char *nombre_usuario;
-    int tiempo;
+    char nombre_usuario[30];
+    double tiempo;
 }Usuario;
 
 /* Menu principal */
@@ -78,9 +78,15 @@ void mostrar_puntajes(TreeMap *puntajes){
         return;
     }
 
-    printf("- Puntajes -");
+    printf("- Puntajes -\n");
     while(iterador){
-        printf("%s: %d\n", iterador->nombre_usuario, iterador->tiempo);
+        if(iterador->tiempo > 60){
+            printf("%s: %.1lf minuto/s\n", iterador->nombre_usuario, (iterador->tiempo/60));
+        }
+        else{
+            printf("%s: %.1lf segundos\n", iterador->nombre_usuario, iterador->tiempo);
+        }
+        iterador = nextTreeMap(puntajes);
     }
     getchar();
     printf("\nPresione ENTER para continuar.");
@@ -349,7 +355,7 @@ void guardarPartida(Tablero* tablero, int fila, int columna)
  * caso contrario, se imprime un mensaje y se le pregunta al usuario si desea guardar su puntaje
  * o no, con el fin de mostrarlo en la opcion '4' del programa.
  */
-void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
+void comenzarJuego(Tablero* tablero, TreeMap *puntajes, int columnas, int filas, int bombas){
     char resp, resp2;
     char minsec[50];
     int min=0, sec=0;
@@ -498,12 +504,23 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
                         muestraTablero(tablero->oculto,columnas,filas);
                         printf("\nHas ganado :)\n");
                         printf("\nTu tiempo empleado fue de %.0lf segundos o %.1lf minutos!\n",tiempoEmpleado, (tiempoEmpleado/60));
-                        printf("Desea guardar su puntaje? (S/N): ");
+                        printf("\nDesea guardar su puntaje? (S/N): ");
                         scanf(" %c", &resp2);
-                        if(resp=='S' || resp=='s'){
-                            /* Se llama a funcion guardarPuntaje */
+                        if(resp2=='S' || resp2=='s'){
+                            printf("\nIngrese su nombre de usuario: ");
+                            char nombre[30];
+                            scanf("%s", nombre);
+                            getchar();
+                            Usuario *usuario = (Usuario *) malloc (1 * sizeof(Usuario));
+                            strcpy(usuario->nombre_usuario, nombre);
+                            usuario->tiempo = tiempoEmpleado;
+                            insertTreeMap(puntajes, &usuario->tiempo, usuario);
+                            printf("\nPuntaje guardado!\n");
                         }
-                        getchar();
+                        else{
+                            printf("\nEl puntaje no fue guardado.\n");
+                        }
+                        //getchar();
                         printf("\nPresione ENTER para continuar.");
                         getchar();
                         return;
@@ -530,7 +547,7 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
  * ya sea el visible y el oculto, con el fin de comenzar la partida desde el 
  * punto guardado.
  */
-void cargarPartida(Tablero* tablero)
+void cargarPartida(Tablero* tablero, TreeMap *puntajes)
 {   
     char archivo[30];
     printf("Por favor ingrese el archivo que se desea leer (.csv): ");
@@ -583,7 +600,7 @@ void cargarPartida(Tablero* tablero)
     columna -=11;
     fila -= 1;
     
-    comenzarJuego(tablero, columna, fila, bombas);
+    comenzarJuego(tablero, puntajes, columna, fila, bombas);
 }
 
 /*
@@ -594,7 +611,7 @@ void cargarPartida(Tablero* tablero)
  * Al seleccionar una dificultad, se llama a la funcion 'comenzarJuego' para seguir con la personalizacion
  * de la jugabilidad y comenzar a jugar.
  */
-void seleccionarDificultad(Tablero* tablero){
+void seleccionarDificultad(Tablero* tablero, TreeMap *puntajes){
 
     int dif;
 
@@ -621,7 +638,7 @@ void seleccionarDificultad(Tablero* tablero){
             InsertarPistas(tablero->oculto,15,8);
             system("cls");
             muestraTablero(tablero->visible, 15, 8);
-            comenzarJuego(tablero,15,8,10);
+            comenzarJuego(tablero,puntajes,15,8,10);
             break;
         case 2:
             tablero->visible = crearTablero(".", 39, 16);
@@ -631,7 +648,7 @@ void seleccionarDificultad(Tablero* tablero){
             InsertarPistas(tablero->oculto,39,16);
             system("cls");
             muestraTablero(tablero->visible, 39, 16);
-            comenzarJuego(tablero,39,16,40);
+            comenzarJuego(tablero,puntajes,39,16,40);
             break;
         case 3:
             tablero->visible = crearTablero(".", 39, 26);
@@ -641,7 +658,7 @@ void seleccionarDificultad(Tablero* tablero){
             InsertarPistas(tablero->oculto,39,26);
             system("cls");
             muestraTablero(tablero->visible, 39, 26);
-            comenzarJuego(tablero,39,26,65);
+            comenzarJuego(tablero,puntajes,39,26,65);
             break;
         case 4: /* Generar un tablero aleatorio */
             randFila = numAleatorio(3,26);
@@ -655,7 +672,7 @@ void seleccionarDificultad(Tablero* tablero){
             InsertarPistas(tablero->oculto,randColu*3,randFila);
             system("cls");
             muestraTablero(tablero->visible,(randColu-3)*3,randFila);
-            comenzarJuego(tablero,(randColu-3)*3,randFila,randMinas);
+            comenzarJuego(tablero,puntajes,(randColu-3)*3,randFila,randMinas);
             break;
         case 5: /* Hay que definir un máximo de columnas, filas y minas. Dejarlo escrito para el usuario */
             printf("Ingrese columnas, filas y minas, respectivamente (c,f,m): ");
@@ -675,7 +692,7 @@ void seleccionarDificultad(Tablero* tablero){
             InsertarPistas(tablero->oculto,(col-3)*3,fil);
             system("cls");
             muestraTablero(tablero->visible, (col-3)*3, fil);
-            comenzarJuego(tablero,(col-3)*3,fil,min);
+            comenzarJuego(tablero,puntajes,(col-3)*3,fil,min);
             break;
         default:;
             dif = 6;
@@ -686,6 +703,6 @@ void seleccionarDificultad(Tablero* tablero){
 }
 
 /* Lo primero que realiza la secuencia del programa es seleccionar la dificultad. */
-void secuenciaPrograma(Tablero* tablero){
-    seleccionarDificultad(tablero);
+void secuenciaPrograma(Tablero* tablero, TreeMap *puntajes){
+    seleccionarDificultad(tablero, puntajes);
 }

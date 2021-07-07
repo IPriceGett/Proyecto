@@ -47,16 +47,16 @@ Tablero* inicializarTablero(Tablero* tablero);
  * el tiempo para jugar, ya sea limitado o iliminado, tambien se guarda la partida
  * si lo desea el usuario y una vez ganado el juego, si se desea se guarda el puntaje.
  */
-void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas);
+void comenzarJuego(Tablero* tablero, TreeMap *puntajes, int columnas, int filas, int bombas);
 
 /*
  * Funcion para seleccionar la dificultad, sea esta Principiante, Intermedio, Experto,
  * Aleatorio o Personalizado.
  * */
-void seleccionarDificultad(Tablero* tablero);
+void seleccionarDificultad(Tablero* tablero, TreeMap *puntajes);
 
 /* Funcion para comenzar con la configuracion del juego. */
-void secuenciaPrograma(Tablero* tablero);
+void secuenciaPrograma(Tablero* tablero, TreeMap *puntajes);
 
 /*
  * Una vez que se presione la opcion '2' mientras el usuario esté en partida, se llama a esta
@@ -65,7 +65,7 @@ void secuenciaPrograma(Tablero* tablero);
 void guardarPartida(Tablero* tablero, int fila, int columna);
 
 /* Fucion que carga la partida presionando la opcion '3' del menu principal. */
-void cargarPartida(Tablero* tablero);
+void cargarPartida(Tablero* tablero, TreeMap *puntajes);
 
 /*
  * Inserta las pistas en el tablero oculto, siendo las pistas la cantidad de bombas

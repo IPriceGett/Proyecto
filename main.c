@@ -4,9 +4,9 @@
 #include "treemap.h"
 #include "Map.h"
 
-int lower_than_int(void* key1, void* key2){
-    int k1 = *((int*) (key1));
-    int k2 = *((int*) (key2));
+double lower_than_double(void* key1, void* key2){
+    double k1 = *((double*) (key1));
+    double k2 = *((double*) (key2));
     return k1<k2;
 }
 
@@ -15,7 +15,7 @@ int main(){
     seedRand();
     //fullscreen();
     /* Mapa ordenado que almacena los mejores puntajes */
-    TreeMap *puntajes = createTreeMap(lower_than_int);
+    TreeMap *puntajes = createTreeMap(lower_than_double);
     /* Almacena las partidas guardadas */
     HashMap *partidas = createMap(50);
     /* Almacena el mapa de partidas guardadas por nombre de usuario */
@@ -31,13 +31,13 @@ int main(){
 
         switch(opcion){
             case 1: /* Comenzar a jugar */
-                secuenciaPrograma(tablero);
+                secuenciaPrograma(tablero, puntajes);
                 break;
             case 2: /* Mostrar instrucciones */
                 instrucciones();
                 break;
             case 3: /* Cargar una partida desde un punto especifico */
-                cargarPartida(tablero);
+                cargarPartida(tablero, puntajes);
                 break;
             case 4: /* Mostrar los mejores puntajes guardados por el usuario */
                 mostrar_puntajes(puntajes);
