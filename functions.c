@@ -18,8 +18,8 @@ typedef struct {
 }Elemento;
 
 typedef struct {
-    Elemento** visible;
-    Elemento** oculto;
+    Elemento** visible; /* Mostrado por pantalla al usuario, incluye solo los movimientos del usuario. */
+    Elemento** oculto; /* Mostrado por pantalla una vez que el usuario haya perdido, incluye bombas y pistas de cada casilla */
 }Tablero;
 
 typedef struct {
@@ -27,6 +27,7 @@ typedef struct {
     int tiempo;
 }Usuario;
 
+/* Menu principal */
 void menu(){
     printf(" ________  ___  ___  ________  ________  ________  _____ ______   ___  ________   ________  ________           ___       \n");
     printf(" |\\   __  \\|\\  \\|\\  \\|\\   ____\\|\\   ____\\|\\   __  \\|\\   _ \\  _   \\|\\  \\|\\   ___  \\|\\   __  \\|\\   ____\\         |\\  \\\n");
@@ -45,6 +46,7 @@ void menu(){
     printf("Ingrese opcion: ");
 }
 
+/* Instrucciones del juego 'Buscaminas'. */
 void instrucciones(){
     printf("El juego 'Buscaminas' consiste en despejar un campo minado, sin dejar que estalle ninguna bomba:\n\n");
     printf("- El usuario tiene que seleccionar la casilla deseada de acuerdo con su coordenada, de la forma 'A1', \n");
@@ -58,6 +60,13 @@ void instrucciones(){
     getchar();
 }
 
+/*
+ * Los puntajes son guardados en un mapa ordenado, donde su clave será el tiempo que el usuario
+ * demoró en jugar y su valor el nombre del usuario, dado esto, los puntajes guardados se
+ * mostraran por pantalla de menor a mayor de acuerdo al tiempo, ya que este hace referencia al puntaje
+ * del usuario, por lo que se recorre el mapa de puntajes en el caso que existan puntajes guardados.
+ * Esto lo realiza la opcion '4' del menu principal.
+ */
 void mostrar_puntajes(TreeMap *puntajes){
 
     Usuario *iterador = firstTreeMap(puntajes);
@@ -78,6 +87,11 @@ void mostrar_puntajes(TreeMap *puntajes){
     getchar();
 }
 
+/*
+ * Esta funcion genera el tablero sin insertar bombas ni pistas, solo recorre la matriz/tablero
+ * para reservar memoria para cada casilla y establece sus coordenadas, siendo las filas letras y
+ * las columnas los números.
+ */
 Elemento** crearTablero(char* valor, int columnas, int fila){
     int i,j;
     fila += 1;
@@ -203,9 +217,15 @@ Elemento** crearTablero(char* valor, int columnas, int fila){
         }
     }
         
-            
     return tablero;
 }
+
+/*
+ * Se insertan las bombas en casillas aleatorias, de acuerdo a las filas y columnas de la
+ * matriz generada y también, de acuerdo a la cantidad de bombas establecido al llamar a la
+ * funcion, por lo que se establece un contador para ir insertando la cantidad de bombas
+ * correspondientes en el tablero.
+ */
 Elemento** InsertarBombas(Elemento** tablero,int cantidadBombas, int columna, int fila){
     int m=0;
     while(m<cantidadBombas){
@@ -219,6 +239,10 @@ Elemento** InsertarBombas(Elemento** tablero,int cantidadBombas, int columna, in
     return tablero;
 }
 
+/*
+ * Esta funcion recorre el tablero e inserta las pistas calculando la cantidad de bombas que
+ * contiene alrededor cada casilla. Estas pistas se almacenan en las casillas que NO contengan bombas.
+ */
 void InsertarPistas(Elemento** tablero,int columna, int fila){
     for(int i=0;i<fila+1;i++){
         for(int j=0;j<columna+11;j++){
@@ -241,6 +265,7 @@ void InsertarPistas(Elemento** tablero,int columna, int fila){
     }
 }
 
+/* Muestra el tablero visible por pantalla recorriendo su respectiva matriz. */
 void muestraTablero(Elemento** tablero,int columna, int fila){
     columna +=11;
     fila += 1;
@@ -252,21 +277,27 @@ void muestraTablero(Elemento** tablero,int columna, int fila){
     }
 }
 
+/* Se inicializa la semilla para la funcion 'srand' */
 void seedRand(){
     srand(time(NULL));
 }
 
+/* Se genera un numero aleatorio entre un numero minimo y maximo dado. */
 int numAleatorio(int min, int max){
     return min + rand() / (RAND_MAX / (max-min+1) + 1);
 }
 
+/* Funcion utilizada en 'main.c' para reservar memoria al tablero inicial.*/
 Tablero* inicializarTablero(Tablero* tablero){
     tablero = (Tablero *) calloc (1, sizeof(Tablero));
     return tablero;
 }
 
-
-
+/*
+ * Cuando el usuario desee guardar su partida en curso, se le pedirá el nombre
+ * que desee darle a la partida con el fin de crear un archivo (.csv) que almacenará
+ * el tablero visible y el oculto.
+ */
 void guardarPartida(Tablero* tablero, int fila, int columna)
 {
     char archivo[30];
@@ -303,6 +334,17 @@ void guardarPartida(Tablero* tablero, int fila, int columna)
     }
 }
 
+/*
+ * Al comenzar el juego se le pide al usuario personalizar el tiempo para la jugabilidad,
+ * pudiendo jugar con tiempo iliminado o limitado, siendo este ultimo ingresado por el mismo.
+ * Luego se genera el tablero y se irá mostrando por pantalla, teniendo las oociones de,
+ * desbloquear una casilla, guardar la partida o salir al menu principal. Esto se mostrará
+ * cada vez que el usuario haga un nuevo movimiento (desbloquee una casilla).
+ * Cada vez que se desee desbloquear una casilla esta se validará para ver si hay una bomba o no.
+ * En el caso que el usuario pierda, se imprime un mensaje y se regresa al menu principal, en
+ * caso contrario, se imprime un mensaje y se le pregunta al usuario si desea guardar su puntaje
+ * o no, con el fin de mostrarlo en la opcion '4' del programa.
+ */
 void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
     char resp;
     char minsec[50];
@@ -455,6 +497,11 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
     printf("\n\tHan pasado %.0lf minutos! \n",tiempoEmpleado);*/
 }
 
+/*
+ * Al cargar una partida se leerá un archivo (.csv) que contendrá el tablero,
+ * ya sea el visible y el oculto, con el fin de comenzar la partida desde el 
+ * punto guardado.
+ */
 void cargarPartida(Tablero* tablero)
 {   
     char archivo[30];
@@ -511,7 +558,14 @@ void cargarPartida(Tablero* tablero)
     comenzarJuego(tablero, columna, fila, bombas);
 }
 
-
+/*
+ * Al inicio del juego, se pide seleccionar una de las cinco dificultades existentes en el programa, generando
+ * cada una un tablero distinto. Estas se diferencian por su largo, ancho y cantidad de minas.
+ * La ultima dificultad es la personalizada, donde el usuario puede establecer el largo y ancho
+ * del tablero con las cantidad de minas deseadas.
+ * Al seleccionar una dificultad, se llama a la funcion 'comenzarJuego' para seguir con la personalizacion
+ * de la jugabilidad y comenzar a jugar.
+ */
 void seleccionarDificultad(Tablero* tablero){
 
     int dif;
@@ -603,6 +657,7 @@ void seleccionarDificultad(Tablero* tablero){
     }
 }
 
+/* Lo primero que realiza la secuencia del programa es seleccionar la dificultad. */
 void secuenciaPrograma(Tablero* tablero){
     seleccionarDificultad(tablero);
 }
