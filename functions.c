@@ -49,8 +49,8 @@ void menu(){
 /* Instrucciones del juego 'Buscaminas'. */
 void instrucciones(){
     printf("El juego 'Buscaminas' consiste en despejar un campo minado, sin dejar que estalle ninguna bomba:\n\n");
-    printf("- El usuario tiene que seleccionar la casilla deseada de acuerdo con su coordenada, de la forma 'A1', \n");
-    printf("  siendo 'A', la fila y '1' la columna.\n");
+    printf("- El usuario tiene que seleccionar la casilla deseada de acuerdo con su coordenada, de la forma 'A,1', \n");
+    printf("  siendo 'A' la fila y '1' la columna (por favor, ingresar la coma).\n");
     printf("- Al seleccionar una casilla sin bomba, esta mostrara un numero que consiste en la cantidad de bombas que\n");
     printf("  contiene esa casilla a su alrededor.\n");
     printf("- En caso contrario, el usuario perdera el juego y se mostrara el tablero descubierto para visualizar\n");
@@ -331,6 +331,10 @@ void guardarPartida(Tablero* tablero, int fila, int columna)
 
     if (fclose(archivoSalida) == EOF){
         printf("El archivo no se pudo cerrar correctamente.");
+    }else{
+        printf("Su partida se guardo correctamente, puede seguir jugando si asi lo desea\n");
+        printf("Presione ENTER para continuar");
+        getchar();
     }
 }
 
@@ -346,7 +350,7 @@ void guardarPartida(Tablero* tablero, int fila, int columna)
  * o no, con el fin de mostrarlo en la opcion '4' del programa.
  */
 void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
-    char resp;
+    char resp, resp2;
     char minsec[50];
     int min=0, sec=0;
     char *token;
@@ -356,9 +360,10 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
     char* aux;
     time_t t, t2;
     struct tm *local, *local2;
-    int contador;
+    int contador, tiempoTotal;
+    int turnos=1;
     contador = filas*(columnas/3+3)*-1 + bombas;
-    printf("Desea jugar con tiempo? (S/N): ");
+    printf("Desea jugar con tiempo limitado? (S/N): ");
     scanf(" %c", &resp);
     if(resp=='S' || resp=='s'){
         printf("Cuanto tiempo maximo desea emplear? (minutos,segundos): ");
@@ -369,11 +374,17 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
         token = strtok(NULL, ",");
         sec = atoi(token);
 
+        tiempoTotal = min*60 + sec;
+
         t = time(NULL);
         local = localtime(&t);
 
         printf("\nDispondras de %i minutos y %i segundos a partir desde ahora (%i:%i:%i)\n",min,sec,local->tm_hour,local->tm_min,local->tm_sec);
     }else{
+        tiempoTotal = 0;
+
+        t = time(NULL);
+        local = localtime(&t);
         printf("\nTienes todo el tiempo del mundo para jugar, no te apures!\n");
     }
     printf("\n\t\tBuena suerte! :D\n\n");
@@ -384,6 +395,26 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
     do{
         system("cls");
         muestraTablero(tablero->visible,columnas,filas);
+        t2 = time(NULL);
+        local2 = localtime(&t2);
+
+        double tiempoEmpleado = (difftime(t2,t));
+
+        if(tiempoEmpleado>=tiempoTotal && (resp=='S' || resp=='s')){
+            printf("\n\tHas sobrepasado el limite de tiempo!\n");
+            printf("\n\t\tSuerte para la proxima :D\n\n");
+            printf("Presione ENTER para continuar");
+            getchar();
+            return;
+        }
+
+        if((turnos%2) == 0){
+            if(tiempoEmpleado<120)
+                printf("\n\tHan pasado %.0lf segundos! \n",tiempoEmpleado);                
+            else
+                printf("\n\tHan pasado %.1lf minutos! \n",(tiempoEmpleado/60));
+        }
+        turnos++;
         printf("\n- OPCIONES -\n");
         printf("1.- Desbloquear una casilla || 2.- Guardar la partida || 3.-Salir al menu principal\n");
         scanf(" %i", &opcion);
@@ -466,6 +497,13 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
                     if(contador == 0){
                         muestraTablero(tablero->oculto,columnas,filas);
                         printf("\nHas ganado :)\n");
+                        printf("\nTu tiempo empleado fue de %.0lf segundos o %.1lf minutos!\n",tiempoEmpleado, (tiempoEmpleado/60));
+                        printf("Desea guardar su puntaje? (S/N): ");
+                        scanf(" %c", &resp2);
+                        if(resp=='S' || resp=='s'){
+                            /* Se llama a funcion guardarPuntaje */
+                        }
+                        getchar();
                         printf("\nPresione ENTER para continuar.");
                         getchar();
                         return;
@@ -485,16 +523,6 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
                 break;
         }
     }while(opcion!=3);
-
-    /*Sleep(10000);
-    t2 = time(NULL);
-    local2 = localtime(&t2);
-
-    printf("\n %i:%i:%i \n", local2->tm_hour, local2->tm_min, local2->tm_sec);
-
-    double tiempoEmpleado = (difftime(t2,t))/60;
-
-    printf("\n\tHan pasado %.0lf minutos! \n",tiempoEmpleado);*/
 }
 
 /*
@@ -513,7 +541,7 @@ void cargarPartida(Tablero* tablero)
 
     FILE *archivoEntrada = fopen(archivo, "r");
     if (archivoEntrada == NULL){
-        printf("El archivo no se pudo abrir en modo lectura");
+        printf("\nEl archivo no se pudo abrir en modo lectura\n");
         return;
     }
 
@@ -609,7 +637,7 @@ void seleccionarDificultad(Tablero* tablero){
             tablero->visible = crearTablero(".", 39, 26);
             tablero->oculto = crearTablero("0", 48, 26);
             printf("Generando partida...");
-            tablero->oculto=InsertarBombas(tablero->oculto,65,47,26);
+            tablero->oculto=InsertarBombas(tablero->oculto,65,39,26);
             InsertarPistas(tablero->oculto,39,26);
             system("cls");
             muestraTablero(tablero->visible, 39, 26);
