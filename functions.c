@@ -430,6 +430,7 @@ void comenzarJuego(Tablero* tablero, int columnas, int filas, int bombas){
                     }
                 break;
             case 2: /* Funcion guardarPartida */
+                guardarPartida(tablero, filas, columnas);
                 break;
             case 3: /* Salir al menu */
                 break;
@@ -482,9 +483,11 @@ void cargarPartida(Tablero* tablero)
         token = strtok(NULL, ",");
         columna = atoi(token);
 
-        tablero->oculto = crearTablero("0", columna, fila);
+        tablero->oculto = crearTablero("0", columna+9, fila);
         tablero->visible = crearTablero(".", columna, fila);
-
+        
+        columna +=11;
+        fila += 1;
         for(int i = 0; i<fila;i++){
             for(int j =0;j<columna;j++){
                 token = strtok(NULL, ",");
@@ -502,9 +505,10 @@ void cargarPartida(Tablero* tablero)
             }
         }
     }
-    muestraTablero(tablero->oculto, 15, 8);
-    //muestraTablero(tablero->visible, 15, 8);
-    //comenzarJuego(tablero, columna, fila, bombas);
+    columna -=11;
+    fila -= 1;
+    
+    comenzarJuego(tablero, columna, fila, bombas);
 }
 
 
