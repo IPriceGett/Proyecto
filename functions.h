@@ -1,6 +1,5 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
-#include "list.h"
 #include "treemap.h"
 
 typedef struct Elemento Elemento;

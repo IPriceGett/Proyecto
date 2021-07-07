@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-#include "list.h"
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -13,8 +12,6 @@
 
 typedef struct {
     char* valor;
-    int coordenadas[2];
-    int seleccionado;
 }Elemento;
 
 typedef struct {

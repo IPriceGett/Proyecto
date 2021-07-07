@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "list.h"
 #include "functions.h"
 #include "treemap.h"
 #include "Map.h"
@@ -13,14 +12,8 @@ double lower_than_double(void* key1, void* key2){
 int main(){
 
     seedRand();
-    //fullscreen();
     /* Mapa ordenado que almacena los mejores puntajes */
     TreeMap *puntajes = createTreeMap(lower_than_double);
-    /* Almacena las partidas guardadas */
-    HashMap *partidas = createMap(50);
-    /* Almacena el mapa de partidas guardadas por nombre de usuario */
-    HashMap *usuarios = createMap(50);
-
     Tablero *tablero = inicializarTablero(tablero);
     
     int opcion;
